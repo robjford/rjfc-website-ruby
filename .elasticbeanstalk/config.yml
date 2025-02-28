@@ -1,0 +1,18 @@
+branch-defaults:
+  main:
+    environment: rjfc-website-ruby--env
+    group_suffix: null
+global:
+  application_name: rjfc-website-ruby
+  branch: null
+  default_ec2_keyname: dev-env-key
+  default_platform: Ruby 3.2 running on 64bit Amazon Linux 2023
+  default_region: ap-southeast-2
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  repository: null
+  sc: git
+  workspace_type: Application
