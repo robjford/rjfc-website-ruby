@@ -1,6 +1,6 @@
 branch-defaults:
   main:
-    environment: rjfc-website-ruby--env
+    environment: rjfc-website-ruby-env
     group_suffix: null
 global:
   application_name: rjfc-website-ruby

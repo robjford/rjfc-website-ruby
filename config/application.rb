@@ -1,6 +1,7 @@
 require_relative "boot"
 
 require "rails/all"
+require "aws-sdk-ssm"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -16,12 +17,20 @@ module RjfcWebsiteRuby
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
+    # Fetch SECRET_KEY_BASE from AWS SSM Parameter Store in production
+    if Rails.env.production?
+      ssm_client = Aws::SSM::Client.new(region: ENV['AWS_REGION'] || 'ap-southeast-2')
+
+      begin
+        secret_key_base_param = ssm_client.get_parameter(
+          name: 'SECRET_KEY_BASE',
+          with_decryption: true
+        )
+        secret_key_base = secret_key_base_param.parameter.value
+        Rails.application.secret_key_base = secret_key_base # 👈 Explicitly set it
+      rescue Aws::SSM::Errors::ParameterNotFound
+        raise "SECRET_KEY_BASE parameter not found in AWS SSM Parameter Store"
+      end
+    end
   end
 end
